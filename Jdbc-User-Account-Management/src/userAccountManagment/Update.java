@@ -63,19 +63,34 @@ public class Update  {
     }
 
 
-        public void list() {
-            try {
-                Connection c = connect.connect();
-                Statement st = c.createStatement();
-                ResultSet rs = st.executeQuery("SELECT * FROM  musteri");
-                while ( rs.next() ) {
-                    System.out.println("ID : " + rs.getInt("id") +
-                                       " Name : " + rs.getString("ad") +
-                                       " Surname : " + rs.getString("soyad") );
-                }
+       public void list() {
+        try {
+            Connection c = connect.connect();
+            Statement st = c.createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM musteri");
+
+            List<Musteri> musteriList = new ArrayList<>();
+
+            while (rs.next()) {
+                Musteri musteri = new Musteri();
+                musteri.setId(rs.getInt("id"));
+                musteri.setAd(rs.getString("ad"));
+                musteri.setSoyad(rs.getString("soyad"));
+                musteriList.add(musteri);
             }
-            catch (Exception E) {
-                System.out.println(E.getMessage());
+            Collections.sort(musteriList, (m1, m2) -> Integer.compare(m1.getId(), m2.getId()));
+
+            for (Musteri musteri : musteriList) {
+                System.out.println("ID : " + musteri.getId() +
+                        " Name : " + musteri.getAd() +
+                        " Surname : " + musteri.getSoyad() );
             }
+            rs.close();
+            st.close();
+            c.close();
         }
+        catch (Exception E) {
+            System.out.println(E.getMessage());
+        }
+    }
 }
